@@ -1,0 +1,139 @@
+.reply-directory {
+  color: var(--primary);
+  font-size: var(--font-0);
+  box-sizing: border-box;
+}
+
+.reply-directory__panel {
+  border-inline-start: 1px solid var(--primary-low);
+}
+
+.reply-directory__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75em;
+  padding: 0.75em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reply-directory__count {
+  flex-shrink: 0;
+  color: var(--primary-medium);
+  font-size: var(--font-down-1);
+  font-weight: 400;
+}
+
+.reply-directory__content {
+  max-height: min(55vh, calc(100dvh - var(--header-offset, 60px) - 12em));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.reply-directory__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.reply-directory__list a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65em;
+  padding: 0.6em 0.75em;
+  color: var(--primary-high);
+  border-inline-start: 2px solid transparent;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.reply-directory__list a:hover,
+.reply-directory__list a[aria-current="location"] {
+  color: var(--tertiary);
+  background: var(--tertiary-very-low);
+  border-inline-start-color: var(--tertiary);
+}
+
+.reply-directory a:focus-visible,
+.reply-directory button:focus-visible,
+.reply-directory summary:focus-visible {
+  outline: 2px solid var(--tertiary);
+  outline-offset: -2px;
+}
+
+.reply-directory__number {
+  color: var(--primary-medium);
+  font-size: var(--font-down-1);
+  font-variant-numeric: tabular-nums;
+  min-width: 2.25em;
+  flex-shrink: 0;
+}
+
+.reply-directory__label {
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.reply-directory__switch,
+.reply-directory__refresh {
+  border: 0;
+  background: transparent;
+  color: var(--tertiary);
+  padding: 0.75em;
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+}
+
+.reply-directory__switch:hover,
+.reply-directory__refresh:hover {
+  text-decoration: underline;
+}
+
+.reply-directory__refresh:disabled {
+  color: var(--primary-medium);
+  cursor: wait;
+}
+
+.reply-directory__status {
+  color: var(--primary-medium);
+  padding: 0.75em;
+  margin: 0;
+}
+
+.reply-directory--inline {
+  margin-block-end: 1.5em;
+  background: var(--primary-very-low);
+}
+
+.reply-directory--inline .reply-directory__panel {
+  border: 0;
+}
+
+.reply-directory--inline summary::after {
+  content: "+";
+}
+
+.reply-directory--inline details[open] summary::after {
+  content: "−";
+}
+
+@media screen and (min-width: 925px) {
+  body.reply-directory-active .container.posts {
+    grid-template-columns: minmax(0, 75%) minmax(0, 25%);
+  }
+
+  .reply-directory--sidebar {
+    width: 100%;
+    max-width: 18em;
+  }
+
+  body.reply-directory-active .timeline-container {
+    display: none;
+  }
+}

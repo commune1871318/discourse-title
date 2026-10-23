@@ -1,0 +1,16 @@
+{
+  "name": "discourse-reply-titles",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/reply-titles.test.js",
+    "check:templates": "node scripts/check-templates.js",
+    "package": "node scripts/package.js"
+  },
+  "devDependencies": {
+    "@babel/parser": "^8.0.7",
+    "@glimmer/syntax": "^0.97.0",
+    "content-tag": "^4.1.0",
+    "jsdom": "^27.0.0"
+  }
+}
