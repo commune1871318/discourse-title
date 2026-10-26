@@ -18,4 +18,4 @@
 
 迁移前目录备份：`/tmp/discourse-reply-titles-before-plugin-20261026/`。若需回退，应停止或关闭新插件，再从备份恢复原目录，并重新启用旧主题组件。开发服务使用现有 `bin/pitchfork` 的 `USR2` 重载机制；重载前应确认进程身份。
 
-正式部署时按 README 的插件安装方式操作；私有仓库仍需构建环境的读取权限。
+当前发布仓库为 `https://github.com/commune1871318/discourse-title`，可直接通过 HTTPS 克隆；正式部署时按 README 的插件安装方式操作。

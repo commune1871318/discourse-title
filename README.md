@@ -36,10 +36,10 @@ discourse/plugins/discourse-/
 将插件仓库加入 `/var/discourse/containers/app.yml` 的现有 `hooks → after_code → exec → cmd` 列表：
 
 ```yaml
-- git clone https://github.com/test-study-1917/discourse-.git discourse-reply-titles
+- git clone https://github.com/commune1871318/discourse-title.git discourse-reply-titles
 ```
 
-该命令应在现有的 `/var/www/discourse/plugins` 工作目录中执行。私有仓库需要先为构建环境配置只读 SSH Deploy Key，并使用 `git@github.com:test-study-1917/discourse-.git`；不要把访问令牌写入仓库或克隆地址。
+该命令应在现有的 `/var/www/discourse/plugins` 工作目录中执行。当前仓库为公开仓库，可以直接使用 HTTPS 地址克隆，无需 Deploy Key 或访问令牌。
 
 然后在 `/var/discourse` 运行 `./launcher rebuild app`。重建会短暂中断论坛，应在合适的维护时间执行。
 
