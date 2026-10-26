@@ -1,7 +1,25 @@
 const BLOCKS = new Set([
-  "P", "DIV", "H1", "H2", "H3", "H4", "H5", "H6", "LI", "UL", "OL",
-  "BLOCKQUOTE", "PRE", "SECTION", "ARTICLE", "ASIDE", "DETAILS", "SUMMARY",
-  "TABLE", "TR", "HR",
+  "P",
+  "DIV",
+  "H1",
+  "H2",
+  "H3",
+  "H4",
+  "H5",
+  "H6",
+  "LI",
+  "UL",
+  "OL",
+  "BLOCKQUOTE",
+  "PRE",
+  "SECTION",
+  "ARTICLE",
+  "ASIDE",
+  "DETAILS",
+  "SUMMARY",
+  "TABLE",
+  "TR",
+  "HR",
 ]);
 
 // Only a leading level-one heading opts a reply into the directory.
@@ -9,7 +27,9 @@ const BLOCKS = new Set([
 // DOMParser creates an inert document; no post HTML is inserted into the page.
 export function firstLine(cooked) {
   const doc = new DOMParser().parseFromString(cooked || "", "text/html");
-  doc.querySelectorAll("script, style, template").forEach((node) => node.remove());
+  doc
+    .querySelectorAll("script, style, template")
+    .forEach((node) => node.remove());
   const first = doc.body.firstElementChild;
   if (!first || !["H1", "P"].includes(first.tagName)) {
     return "";
@@ -43,14 +63,24 @@ export function firstLine(cooked) {
     }
   }
   walk(first);
-  const line = text.split(/\r?\n/).map((line) => line.replace(/[\t\u00a0 ]+/g, " ").trim())
-    .find(Boolean) || "";
-  return first.tagName === "H1" ? line : line.match(/^#(?!#)\s*(\S.*)$/)?.[1] || "";
+  const line =
+    text
+      .split(/\r?\n/)
+      .map((part) => part.replace(/[\t\u00a0 ]+/g, " ").trim())
+      .find(Boolean) || "";
+  return first.tagName === "H1"
+    ? line
+    : line.match(/^#(?!#)\s*(\S.*)$/)?.[1] || "";
 }
 
 export function titleEntry(post) {
-  if (post.post_number <= 1 || post.post_type !== 1 || post.deleted_at ||
-      post.user_deleted || post.hidden) {
+  if (
+    post.post_number <= 1 ||
+    post.post_type !== 1 ||
+    post.deleted_at ||
+    post.user_deleted ||
+    post.hidden
+  ) {
     return null;
   }
   const title = firstLine(post.cooked);
@@ -80,7 +110,10 @@ export async function loadReplyTitles({ topicId, request, signal, onUpdate }) {
   const initial = topic.post_stream.posts;
   collect(initial);
 
-  if (Array.isArray(topic.post_stream.stream) && topic.post_stream.stream.length) {
+  if (
+    Array.isArray(topic.post_stream.stream) &&
+    topic.post_stream.stream.length
+  ) {
     const loaded = new Set(initial.map((post) => post.id));
     const missing = topic.post_stream.stream.filter((id) => !loaded.has(id));
     for (let start = 0; start < missing.length; start += 20) {

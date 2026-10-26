@@ -31,4 +31,4 @@ function check(directory) {
     }
   }
 }
-check("javascripts");
+check("assets/javascripts");

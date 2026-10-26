@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { JSDOM } from "jsdom";
-import { firstLine, titleEntry, loadReplyTitles } from "../javascripts/discourse/lib/reply-titles.js";
+import { firstLine, titleEntry, loadReplyTitles } from "../assets/javascripts/discourse/lib/reply-titles.js";
 
 globalThis.DOMParser = new JSDOM("").window.DOMParser;
 const post = (number, cooked = `<h1>标题 ${number}</h1><p>正文</p>`) => ({

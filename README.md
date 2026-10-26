@@ -1,4 +1,4 @@
-# 回帖标题目录
+# 回帖标题目录 · Discourse 插件
 
 把读书会主题中首行以单个 `#` 标记标题的回复汇总到右侧，按楼层排列；点击标题跳到对应回复。普通文字首行不进入目录。
 
@@ -10,17 +10,42 @@
 这一章让我想到……
 ```
 
-侧边目录显示 `#2 第三章：我们为什么阅读`，不显示标题标记。也支持标准 Markdown 写法 `# 第三章：我们为什么阅读`，组件不修改正文。
+侧边目录显示 `#2 第三章：我们为什么阅读`，不显示标题标记。也支持标准 Markdown 写法 `# 第三章：我们为什么阅读`，插件不修改正文。
 
 ## 安装到 Discourse
 
-1. 在管理员的**外观 → 主题**页面选择**安装 → 从 Git 仓库安装**。
-2. 输入 `https://github.com/test-study-1917/discourse-` 并安装。
-3. 将“回帖标题目录 · Reply Titles”组件添加到正在使用的主题，然后打开一个有回复的主题。
+这是服务器插件，不再通过“外观 → 主题”安装，也不需要关联到某个主题。若曾安装同名主题组件，请先从当前主题中移除，避免显示两份目录。
 
-也可以在本地运行 `npm run package`，再通过**安装 → 从设备上传**上传生成的 `dist/discourse-reply-titles.tar.gz`。
+### 本地开发环境
 
-需要论坛管理员权限。组件通过当前访客的会话读取主题，不需要 API Key，也不需要安装服务器插件。默认作用于启用它的主题下的所有讨论帖。
+将本项目的 `plugin.rb`、`assets/`、`config/` 放在 Discourse 的同一个插件目录中，例如：
+
+```text
+discourse/plugins/discourse-/
+├── plugin.rb
+├── assets/
+└── config/
+```
+
+文件夹名可以继续使用现有的 `discourse-`，但本机 Discourse 会提示它与插件标识不同；新安装建议使用 `discourse-reply-titles`。不要同时在两个文件夹下安装本插件。
+
+重启 Discourse 的 Rails 服务及前端开发服务，然后刷新页面。后台站点设置中搜索 `reply_titles_enabled`；默认开启，关闭后刷新页面即可恢复原生布局。
+
+### Docker 生产环境
+
+将插件仓库加入 `/var/discourse/containers/app.yml` 的现有 `hooks → after_code → exec → cmd` 列表：
+
+```yaml
+- git clone https://github.com/test-study-1917/discourse-.git discourse-reply-titles
+```
+
+该命令应在现有的 `/var/www/discourse/plugins` 工作目录中执行。私有仓库需要先为构建环境配置只读 SSH Deploy Key，并使用 `git@github.com:test-study-1917/discourse-.git`；不要把访问令牌写入仓库或克隆地址。
+
+然后在 `/var/discourse` 运行 `./launcher rebuild app`。重建会短暂中断论坛，应在合适的维护时间执行。
+
+也可以运行 `npm run package`，解压 `dist/discourse-reply-titles-plugin.tar.gz` 到 Discourse 的 `plugins/` 目录。压缩包内自带 `discourse-reply-titles/` 文件夹；这是插件源码包，不能上传到主题页面。容器化部署仍需保证插件进入构建配置，以免下次重建时丢失。
+
+插件通过当前访客的会话读取主题，不需要 API Key，也不增加服务器接口；沿用论坛现有的主题访问权限。
 
 ## 显示与更新规则
 
@@ -41,15 +66,21 @@ npm run check:templates
 npm run package
 ```
 
-产物：`dist/discourse-reply-titles.tar.gz`。测试覆盖标题提取、跨批次完整读取、失败、取消、刷新和超大主题分页。`check:templates` 检查 GJS、JavaScript 与模板内部语法，不替代 Discourse 中的运行验证。
+产物：`dist/discourse-reply-titles-plugin.tar.gz`。测试覆盖标题提取、跨批次完整读取、失败、取消、刷新和超大主题分页。`check:templates` 检查 GJS、JavaScript 与模板内部语法，不替代 Discourse 中的运行验证。
 
-使用现代 Discourse 的 `api.renderInOutlet`、Glimmer 组件与 `TrackedMediaQuery`。本地已检查桌面及手机尺寸下的 CSS 布局示例；目前尚未在实际 Discourse 站点安装验证，也未确定最低兼容版本。首次启用请先在主题预览中检查：超过 20 条回复的主题、点击未加载楼层、时间轴切换、手机展开，以及站点已有目录组件是否占用同一侧栏。使用自定义主题时，以预览中的布局为准。
+Discourse 内的浏览器验收测试位于 `test/javascripts/acceptance/reply-directory-test.js`，覆盖桌面目录、时间轴切换、刷新、手机展开与楼层跳转，以及禁用开关。可以打开开发站点的 `/tests?target=discourse-reply-titles&filter=Reply%20directory` 运行；`target` 使用实际安装文件夹名，本机现有目录应填 `discourse-`。
+
+本次迁移的验证与本地回退方法见 [验证记录](docs/verification.md)。
+
+使用现代 Discourse 的 `api.renderInOutlet`、Glimmer 组件与 `TrackedMediaQuery`，最低兼容版本尚未确定。首次在其他站点启用时，请检查超过 20 条回复的主题、点击未加载楼层、时间轴切换、手机展开，以及已有目录组件是否占用同一侧栏。
 
 ## 实现入口
 
-- `javascripts/discourse/lib/reply-titles.js`：首行提取、完整主题分页。
-- `javascripts/discourse/components/reply-directory.gjs`：目录、刷新、楼层跳转。
-- `javascripts/discourse/api-initializers/reply-directory.gjs`：右侧和窄屏挂载。
-- `common/common.scss`：沿用当前主题颜色与字号。
+- `plugin.rb`：插件入口、站点设置开关和样式注册。
+- `config/settings.yml`、`config/locales/`：站点设置和中英文翻译。
+- `assets/javascripts/discourse/lib/reply-titles.js`：首行提取、完整主题分页。
+- `assets/javascripts/discourse/components/reply-directory.gjs`：目录、刷新、楼层跳转。
+- `assets/javascripts/discourse/api-initializers/reply-directory.gjs`：右侧和窄屏挂载。
+- `assets/stylesheets/reply-directory.scss`：沿用当前主题颜色与字号。
 
 仅用 `api.decorateCookedElement()` 扫描正文会遗漏尚未加载的回复，因此这里通过主题 JSON 和帖子批量接口建立完整目录，用官方插件挂载点显示。

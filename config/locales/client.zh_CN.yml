@@ -1,0 +1,12 @@
+zh_CN:
+  js:
+    reply_titles:
+      title: "回帖目录"
+      count:
+        other: "%{count} 条"
+      show_directory: "切换到回帖目录"
+      show_timeline: "切换到时间轴"
+      loading: "正在读取全部回帖…"
+      failed: "目录尚未加载完整，请刷新重试。"
+      empty: "还没有首行以 # 标记标题的回帖。"
+      refresh: "刷新目录"

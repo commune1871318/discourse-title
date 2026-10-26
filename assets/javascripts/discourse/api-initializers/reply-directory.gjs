@@ -3,7 +3,7 @@ import { registerDestructor } from "@ember/destroyable";
 import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
 import TrackedMediaQuery from "discourse/lib/tracked-media-query";
-import ReplyDirectory from "../components/reply-directory";
+import ReplyDirectory from "../components/reply-directory.gjs";
 
 const SidebarDirectory = <template>
   {{#if @outletArgs.renderTimeline}}
@@ -15,6 +15,7 @@ const SidebarDirectory = <template>
 
 class InlineDirectory extends Component {
   @service site;
+
   widthQuery = new TrackedMediaQuery("(min-width: 925px)");
 
   constructor() {
@@ -28,12 +29,16 @@ class InlineDirectory extends Component {
 
   <template>
     {{#if this.visible}}
-      <ReplyDirectory @topic={{@outletArgs.model}} @inline={{true}} />
+      <ReplyDirectory @inline={{true}} @topic={{@outletArgs.model}} />
     {{/if}}
   </template>
 }
 
-export default apiInitializer("1.8.0", (api) => {
+export default apiInitializer((api) => {
+  if (!api.container.lookup("service:site-settings").reply_titles_enabled) {
+    return;
+  }
+
   api.renderInOutlet("topic-navigation", SidebarDirectory);
   api.renderInOutlet("topic-above-posts", InlineDirectory);
 });
