@@ -2,7 +2,7 @@
 
 ## 结果
 
-已将主题组件转换为 Discourse 服务器插件，并安装到本机 `/home/v/projects/discourse/plugins/discourse-/`。不再使用 `themePrefix`、主题翻译结构或主题资源目录。
+已将主题组件转换为 Discourse 服务器插件，并安装到本机 `/home/x/projects/discourse/plugins/discourse-/`。不再使用 `themePrefix`、主题翻译结构或主题资源目录。
 
 - 标题提取与分页的 10 项 Node 测试通过；GJS 和模板语法检查通过。
 - Ruby 语法、RuboCop、Syntax Tree、ESLint 和 Stylelint 检查通过。
